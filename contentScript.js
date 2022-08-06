@@ -7,15 +7,49 @@
 
         var obj = {};
 
-        obj[videoId] = "videoooooo";
+        var today = new Date();
 
-        chrome.storage.local.set(obj, ()=>{
-            console.log("written successfully");
-        })
+        var date = today.getDate();
+        var month = today.getMonth();
+        var year = today.getFullYear();
 
-        chrome.storage.local.get([videoId], (result)=>{
+        var key = date + "-" + month + "-" + year;
+
+        var links = [];
+
+        var storage = chrome.storage.local;
+
+        storage.get(key, (result)=>{
+            console.log("result:\t", result);
+            let len = Object.keys(result).length;
+            console.log("length:\t", len);
+            // var links = [];
+            if(len !== 0){
+                console.log("Inside not 00");
+                links = result[key];
+            }
+            console.log("key:\t", key);
+            links.push([videoId, listId]);
+            console.log("links:\t", links)
             console.log("value:\t", result);
+            obj[key] = links;
+
+            storage.set(obj, (result)=>{
+                console.log("obj in write:\t", obj);
+                console.log("result:\t", result);
+                console.log("written successfully");
+    
+                chrome.storage.local.get(key, (result)=>{
+                    console.log("neww result:\t", result);
+                })
+    
+            });
+
         });
+
+        
+        // obj[videoId] = "videoooooo";
+
 
         response({"result": "Okay"});
             
